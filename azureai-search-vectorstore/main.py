@@ -58,25 +58,26 @@ def hybrid_search(query, k=3):
     return format_results(results)
 
 def format_results(results):
-    formatted = ""
+    formatted = "# Search Results\n\n"
     for i, result in enumerate(results, 1):
-        formatted += f"Result {i}:\n"
-        formatted += f"Content: {result.page_content}\n"
-        formatted += f"Source: {result.metadata.get('source', 'Unknown')}\n"
-        formatted += "\n"
+        formatted += f"## Result {i}\n\n"
+        formatted += f"**Content:** {result.page_content}\n\n"
+        formatted += f"**Source:** {result.metadata.get('source', 'Unknown')}\n\n"
+        formatted += "---\n\n"
     return formatted
 
 def format_results_with_scores(results):
-    formatted = ""
+    formatted = "# Search Results\n\n"
     for i, (doc, score) in enumerate(results, 1):
-        formatted += f"Result {i}:\n"
-        formatted += f"Content: {doc.page_content}\n"
-        formatted += f"Source: {doc.metadata.get('source', 'Unknown')}\n"
-        formatted += f"Relevance Score: {score:.4f}\n"
-        formatted += "\n"
+        formatted += f"## Result {i}\n\n"
+        formatted += f"**Content:** {doc.page_content}\n\n"
+        formatted += f"**Source:** {doc.metadata.get('source', 'Unknown')}\n\n"
+        formatted += f"**Relevance Score:** {score:.4f}\n\n"
+        formatted += "---\n\n"
     return formatted
 
-# Gradio interface
+# ... (keep the rest of the functions)
+
 def gradio_search(query, num_results, search_type, score_threshold=0.5):
     k = int(num_results)
     if search_type == "Similarity Search":
@@ -96,7 +97,7 @@ iface = gr.Interface(
         gr.Radio(["Similarity Search", "Similarity Search with Relevance Scores", "Hybrid Search"], label="Search Type"),
         gr.Slider(minimum=0.0, maximum=1.0, step=0.01, value=0.5, label="Score Threshold (for Similarity Search with Relevance Scores)")
     ],
-    outputs="text",
+    outputs=gr.Markdown(label="Search Results"),
     title="Document Search",
     description="Enter a query to search the document database using different search methods.",
 )

@@ -2,6 +2,8 @@
 
 This repository contains a Python application that uses Azure AI to search a vector store with documents. The application leverages the power of OpenAI embeddings and Azure Search to provide similarity search, similarity search with relevance scores, and hybrid search capabilities. The application also provides a Gradio interface for user interaction.
 
+![gui]( resources/gui.png)
+
 ## Table of Contents
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)

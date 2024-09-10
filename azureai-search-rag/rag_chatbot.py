@@ -8,7 +8,7 @@ from langchain.chains.history_aware_retriever import create_history_aware_retrie
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain_community.vectorstores.azuresearch import AzureSearch
 from langchain_core.chat_history import BaseChatMessageHistory
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder, PromptTemplate
 from langchain_core.runnables import RunnableWithMessageHistory
 from langchain_openai import AzureOpenAIEmbeddings, AzureChatOpenAI
 from langchain_community.document_loaders import DirectoryLoader, UnstructuredMarkdownLoader
@@ -71,11 +71,13 @@ class RAGChatbot:
         )
 
         system_prompt = (
-            "You are an assistant for question-answering tasks. "
-            "Use the following pieces of retrieved context to answer "
-            "the question. If you don't know the answer, say that you "
-            "don't know. Use three sentences maximum and keep the "
-            "answer concise."
+            "You are an assistant for question-answering tasks, providing responses "
+            "suitable for an expert audience. Use only the following pieces of retrieved "
+            "context to answer the question. If the context doesn't contain relevant "
+            "information, state that you don't have enough information to answer. "
+            "Avoid answering without sources. When possible, provide a link or reference "
+            "to the source of the information. Use technical language appropriate for "
+            "experts in the field. Prioritize precision and depth over simplification. "
             "\n\n"
             "{context}"
         )
@@ -87,7 +89,11 @@ class RAGChatbot:
                 ("human", "{input}"),
             ]
         )
-        question_answer_chain = create_stuff_documents_chain(self.llm, qa_prompt)
+        document_prompt = PromptTemplate.from_template("""
+            Content: {page_content}
+            Source: {source}
+            """)
+        question_answer_chain = create_stuff_documents_chain(self.llm, qa_prompt, document_prompt=document_prompt)
 
         self.rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
 

@@ -45,4 +45,4 @@ if __name__ == "__main__":
     # rag_chatbot.save_to_db()
 
     demo = create_gradio_interface(rag_chatbot)
-    demo.launch(server_name="0.0.0.0")
+    demo.launch(server_name="0.0.0.0", server_port=7860)
